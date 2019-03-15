@@ -11,7 +11,7 @@ use think\Db;
  class Index extends Userbase{
 
      public function index(){
-        
+
      }
 
 

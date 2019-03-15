@@ -83,7 +83,7 @@ $('#head')[0].innerHTML =
                 + '<li class="' + (activeClass.example || '') + '"><a href="' + (loc.example || '.') + '/example-en.html">Example</a></li>'
                 // + '<li class="' + (activeClass.doc || '') + '"><a href="' + (loc.doc || '.') + '/doc-en.html">API & Doc</a></li>'
             )
-            : ('<li class="' + (activeClass.index || '') + '"><a href="' + (loc.index || '.') + '/index.html">首页</a></li>'
+            : ('<li class="' + (activeClass.index || '') + '"><a href="' + (loc.index || '.') + '/index.phtml">首页</a></li>'
                 + '<li class="' + (activeClass.feature || '') + '"><a href="' + (loc.feature || '.') + '/feature.html">特性</a></li>'
                 + '<li class="' + (activeClass.example || '') + '"><a href="' + (loc.example || '.') + '/example.html">实例</a></li>'
                 // + '<li class="' + (activeClass.doc || '') + '"><a href="' + (loc.doc || '.') + '/doc.html">文档</a></li>'
@@ -171,7 +171,7 @@ if ($footer.length) {
                     + '<ul>'
                         + '<li><a href="http://tushuo.baidu.com/" target="_blank">Baidu 图说</a></li>'
                         + '<li><a href="' + (enVersion ? "http://ecomfe.github.io/echarts-x" : 'http://echarts.baidu.com/x/doc') + '" target="_blank">ECharts-X</a></li>'
-                        + '<li><a href="http://ecomfe.github.io/zrender/index.html" target="_blank">ZRender</a></li>'
+                        + '<li><a href="http://ecomfe.github.io/zrender/index.phtml" target="_blank">ZRender</a></li>'
                         + '<li><a href="https://github.com/pissang/qtek" target="_blank">QTEK</a></li>'
                     + '</ul>'
                 + '</div>'

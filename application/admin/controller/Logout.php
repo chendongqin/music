@@ -12,8 +12,7 @@ class Logout extends Adminbase{
 
     //退出登陆
     public function index(){
-        $sission = new Session();
-        $sission->delete('admin_user');
-        return $this->redirect('/admin/');
+        Session::delete('admin');
+        return $this->redirect('/admin/login');
     }
 }
