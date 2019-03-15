@@ -589,50 +589,6 @@ if (!function_exists('collection')) {
 
 }
 
-//if (!function_exists('uri')) {
-//    /**
-//     * 生成URI
-//     *
-//     * @param array $reset
-//     *        	需要重置的URI参数对, key === (null|false) 此参数将被注销
-//     * @return string
-//     */
-//    function uri(array $reset = array()) {
-//        $request = Request::instance();
-//        $baseURI = '';
-//        $query = $request->request();
-//        $params = $request->param();
-//        $prefix = array ();
-//
-//        $prefix ['module'] = strtolower ( $request->module() );
-//        $prefix ['controller'] = strtolower ( $request->controller());
-//        $prefix ['action'] = strtolower ( $request->action());
-//
-//        if (! empty ( $reset )) {
-//            foreach ( $reset as $key => $value ) {
-//                if (isset ( $prefix [$key] )) {
-//                    $prefix [$key] = $value ?  : null;
-//                } else if (isset ( $params [$key] )) {
-//                    $params [$key] = $value ?  : null;
-//                } else {
-//                    $query [$key] = $value ?  : null;
-//                }
-//            }
-//        }
-//
-//        $prefix_uri = '/' . trim ( $baseURI . implode ( '/', $prefix ), '/' );
-//        $params_uri = trim ( str_replace ( array (
-//            '&',
-//            '='
-//        ), '/', http_build_query ( $params ) ) );
-//        $query_uri = trim ( http_build_query ( $query ) );
-//        if (empty ( $params_uri ) && $prefix['module'] == 'index') {
-//            $prefix_uri = str_ireplace ( '/index', '', $prefix_uri );
-//        }
-//
-//        $uri = trim ( sprintf ( '%s%s', $prefix_uri, (empty ( $query_uri ) ? '' : '?' . $query_uri) ) );
-//        return $uri;
-//    }
 
 if (!function_exists('uri')) {
     /**
@@ -660,15 +616,14 @@ if (!function_exists('uri')) {
 }
 
 if (!function_exists('idOfFiler')) {
-    /**
-     * 生成URI
-     *
-     * @param array $reset
-     *        	需要重置的URI参数对, key === (null|false) 此参数将被注销
+    /**通过id条件获取值
+     * @param $table
+     * @param array $where
+     * @param string $filer
      * @return string
      */
     function idOfFiler($table,array $where,$filer='name') {
         $value = Db::name($table)->where($where)->column($filer);
-        return isset($value[0])?$value[0]:$value;
+        return isset($value[0])?$value[0]:'';
     }
 }

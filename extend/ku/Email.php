@@ -47,7 +47,6 @@ class Email{
             $mail->setFrom($emailConfig['email'], $emailConfig['name']);
             //  添加收件人1
             $mail->addAddress($email, 'dear');     // Add a recipient
-//            $mail->addAddress('913294974@qq.com', 'dear');
             //            $mail->addAddress('ellen@example.com');               // Name is optional
             //            收件人回复的邮箱
             $mail->addReplyTo($emailConfig['email'], $emailConfig['name']);

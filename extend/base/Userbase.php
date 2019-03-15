@@ -6,31 +6,24 @@
  * Time: 13:15
  */
 namespace base;
-use think\Session;
-use think\Controller;
-class Userbase extends Controller {
-    protected $_ec = array(
+use think\Cache;
+use think\Db;
+class Userbase extends Base {
+    protected $_api = array(
 //        'user'=>array( 'index'),
     );
-    protected $_ac = array(
-//        'index'=>'*',
-    );
-    private  $_user = '';
+
     protected function _initialize() {
-//        parent::_initialize();
-        $user = Session::get('user');
-        $user = isset($user[0])?$user[0]:$user;
-        //$this->isFilter()判断该访问方法是否为过滤访问方法
         if($this->isFilter()===false){
+            $user = $this->getLoginUser();
             if(empty($user)){
-                return $this->redirect('/user/login');
+                $msg = array('status'=>false,'msg'=>'你没有登陆','code'=>9000,'data'=>[]);
+                header('Content-type: application/json; charset=utf-8');
+                echo json_encode($msg,JSON_UNESCAPED_UNICODE );
+                die();
             }
+            $this->assign('user',$user);
         }
-        $user = isset($user[0])?$user[0]:$user;
-        $this->assign('user',$user);
-        $this->setUser($user);
-        Session::delete('user');
-        Session::push('user',$user);
     }
 
     protected function isFilter(){
@@ -38,32 +31,37 @@ class Userbase extends Controller {
         $module = strtolower($request->module());
         $controller = strtolower($request->controller());
         $action = strtolower($request->action());
-        if(!isset($this->_ec[$module])){
+        if(!isset($this->_api[$module])){
             return false;
         }
-        if(!in_array($controller,$this->_ec[$module])){
+        if(!in_array($controller,$this->_api[$module])){
             return false;
         }
-        if($this->_ac[$controller]== '*'){
+        if($this->_api[$module][$controller]== '*'){
             return true;
-        }elseif(is_array($this->_ac[$controller]) and in_array($action,$this->_ac[$controller])){
-            return true;
-        }else{
-            return false;
         }
+        $actions = explode(',',$this->_api[$module][$controller]);
+        if(in_array($action,$actions)){
+            return true;
+        }
+        return false;
     }
 
-    private function setUser($user){
-        $this->_user = $user;
-        return $this;
+    /**
+     * 获取登陆用户
+     * @return array|false|null|string|\think\Model
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getLoginUser(){
+        $token = $this->getParam('token');
+        $userId = Cache::get('user'.$token);
+        if(empty($userId)){
+           return null;
+        }
+        $user = Db::name('user')->where('user_id',$userId)->find();
+        return $user;
     }
 
-    protected function getUser(){
-        return $this->_user;
-    }
-
-    protected function returnJson($msg='',$status = false,$code=0,$data=array()){
-        $jsonData = array('status'=>$status,'msg'=>$msg,'code'=>$code,'data'=>$data);
-        return json($jsonData);
-    }
 }
