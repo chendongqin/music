@@ -46,6 +46,30 @@ class Base extends Controller{
         return json($jsonData);
     }
 
+    /**
+     * 成功返回Json
+     * @param array $data
+     * @param string $msg
+     * @param int $code
+     * @return \think\response\Json
+     */
+    protected function successJson($data=array(),$msg = '成功' , $code=1){
+        $jsonData = array('status'=>true,'msg'=>$msg,'code'=>$code,'data'=>$data);
+        return json($jsonData);
+    }
+
+    /**
+     * 失败返回Json
+     * @param array $data
+     * @param string $msg
+     * @param int $code
+     * @return \think\response\Json
+     */
+    protected function errorJson($msg = '失败' , $code=0,$data = []){
+        $jsonData = array('status'=>false,'msg'=>$msg,'code'=>$code,'data'=>$data);
+        return json($jsonData);
+    }
+
     /**自动匹配请求方法获取参数
      * @param string $name
      * @param string $default
