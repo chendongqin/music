@@ -45,14 +45,9 @@ class Song extends Base
         $select = $this->getParam('select');
         //是否在输入搜索的过程中
         $selectIn = $this->getParam('selectIn', 0, 'int');
-        $where = ['is_del' => 0];
+        $where = 'is_del = 0 ';
         if ($select) {
-            $where = array(
-                'singer'     => ['like', '%' . $select . '%'],
-                'song_name'  => ['like', '%' . $select . '%'],
-                'album_name' => ['like', '%' . $select . '%'],
-                'is_del'     => 0
-            );
+            $where .= " and (singer like '%".$select."%' or song_name like '%".$select."%' or album_name like '%".$select."%')";
         }
         if ($selectIn) {
             $page = 1;
@@ -97,6 +92,28 @@ class Song extends Base
         $pageLimit = $this->getParam('pageLimit', 20, 'int');
         $where = ['is_del' => 0];
         $order = 'comments_score desc ,order_by desc';
+        $pager = Db::name('song')
+            ->where($where)
+            ->order($order)
+            ->paginate($pageLimit, false, array('page' => $page))
+            ->toArray();
+        return $this->successJson($pager['data']);
+    }
+
+    //专辑歌曲
+    public function album()
+    {
+        $albumId = $this->getParam('albumId', 0, 'int');
+        if (!$album = Db::name('album')->where(['album_id' => $albumId, 'is_del' => 0])->find()) {
+            return $this->errorJson('专辑不存在');
+        }
+        $where = array(
+            'album_id' => $albumId,
+            'is_del'   => 0
+        );
+        $order = 'order_by desc';
+        $page = $this->getParam('page', 1, 'int');
+        $pageLimit = $this->getParam('pageLimit', 20, 'int');
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
@@ -166,10 +183,10 @@ class Song extends Base
     }
 
     //获取歌曲评论列表
-    public function getcomment()
+    public function getcomments()
     {
-        $songId = $this->getParam('songId',0,'int');
-        if(!$song = Db::name('song')->where('song_id',$songId)->find()){
+        $songId = $this->getParam('songId', 0, 'int');
+        if (!$song = Db::name('song')->where('song_id', $songId)->find()) {
             return $this->errorJson('歌曲不存在');
         }
         $page = $this->getParam('page', 1, 'int');
@@ -182,8 +199,8 @@ class Song extends Base
             ->paginate($pageLimit, false, array('page' => $page))
             ->toArray();
         $data = [];
-        foreach ($pager['data'] as $key=>$datum){
-            $datum['create_at'] = date('Y-m-d H:i:s',$datum['create_at']);
+        foreach ($pager['data'] as $key => $datum) {
+            $datum['create_at'] = date('Y-m-d H:i:s', $datum['create_at']);
             $datum['user_name'] = $this->getUserName($datum['user_id']);
             $data[$key] = $datum;
         }

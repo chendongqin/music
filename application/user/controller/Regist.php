@@ -55,7 +55,7 @@ class Regist extends Base
             return $this->errorJson();
         }
         $userId = Db::name('user')->getLastInsID();
-        $data = array('token' => $this->userToken($userId));
+        $data = array('token' => $this->userToken($userId),'user_id'=>$userId);
         return $this->successJson($data);
     }
 

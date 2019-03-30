@@ -40,7 +40,7 @@ class Login extends Base
         if(!$this->virefyPwd($user['password'],$password)){
             return $this->errorJson('密码不正确');
         }
-        $data = array('token' => $this->userToken($user['user_id']));
+        $data = array('token' => $this->userToken($user['user_id']),'user_id'=>$user['user_id']);
         return $this->successJson($data);
     }
 
