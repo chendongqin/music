@@ -52,6 +52,10 @@ class Index extends Userbase
     {
         $user = $this->getLoginUser();
         $user['nick_name'] = $this->getParam('nick_name');
+        $user['language'] = $this->getParam('language', $user['language'], 'int');
+        if (!in_array($user['language'], $this->_musicLanguages)) {
+            return $this->errorJson('修改的语言格式不正确');
+        }
         if (!$user['nick_name']) {
             return $this->errorJson('用户昵称不能为空');
         }
