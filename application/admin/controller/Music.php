@@ -76,14 +76,14 @@ class Music extends Adminbase
         }
         $filenameArr = explode('.',$filename);
         if(!in_array(strtoupper(end($filenameArr)),$this->_musicOrigins)){
-            unlink(ROOT_PATH.'public'.DS.'uploads'.DS.'music_origin'.DS.date('Ymd').DS.$filename);
+            @unlink(ROOT_PATH.'public'.DS.'uploads'.DS.'music_origin'.DS.date('Ym').DS.$filename);
             return $this->returnJson('音乐源文件类型为：'.implode('，',$this->_musicOrigins));
         }
-        $data['song_origin'] = DS.'music_origin'.DS.date('Ym').DS.$filename;
+        $data['song_origin'] = DS.'uploads'.DS.'music_origin'.DS.date('Ym').DS.$filename;
         //上传音乐图片
         $songOrigin = $request->file('songPicture');
         if(empty($songOrigin)){
-            unlink(ROOT_PATH.'public'.DS.'uploads'.$data['song_origin']);
+            @unlink(ROOT_PATH.'public'.$data['song_origin']);
             return $this->returnJson('音乐图片不能为空');
         }
         $dir = ROOT_PATH.'public'.DS.'uploads'.DS.'music_picture';
@@ -91,16 +91,16 @@ class Music extends Adminbase
         $info = $songOrigin->move($dir);
         $filename = $info->getFilename();
         if(!$filename){
-            unlink(ROOT_PATH.'public'.DS.'uploads'.$data['song_origin']);
+            @unlink(ROOT_PATH.'public'.$data['song_origin']);
             return $this->returnJson($songOrigin->getError());
         }
         $filenameArr = explode('.',$filename);
         if(!in_array(strtoupper(end($filenameArr)),$this->_musicOrigins)){
-            unlink(ROOT_PATH.'public'.DS.'uploads'.$data['song_origin']);
-            unlink(ROOT_PATH.'public'.DS.'uploads'.DS.'music_picture'.DS.date('Ymd').DS.$filename);
+            @unlink(ROOT_PATH.'public'.$data['song_origin']);
+            @unlink(ROOT_PATH.'public'.DS.'uploads'.DS.'music_picture'.DS.date('Ym').DS.$filename);
             return $this->returnJson('音乐图片文件类型为：'.implode('，',$this->_musicOrigins));
         }
-        $data['song_picture'] = DS.'music_origin'.DS.date('Ym').DS.$filename;
+        $data['song_picture'] = DS.'uploads'.DS.'music_origin'.DS.date('Ym').DS.$filename;
         Db::startTrans();
         if(!$singer = Db::name('singer')->where('singer_name',$data['singer'])->find()){
             $res = Db::name('singer')->insert(array('singer_name'=>$data['singer']));

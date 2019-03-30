@@ -21,6 +21,9 @@ class Base extends Controller
     protected $_musicTypes = [
         '全部', '经典老歌', '流行音乐', 'DJ', '古典音乐', '民谣', '说唱', '新歌',
     ];
+    protected $_musicTypesCol = [
+        '', 'is_old', 'is_popular', 'is_dj', 'is_classical', 'is_flok', 'is_rap', 'is_new',
+    ];
 
     protected $_musicLanguages = [
         '中文', '方言', '英文', '韩语', '日语', '俄语', '其他',
@@ -161,7 +164,7 @@ class Base extends Controller
         }
         $str = $code . $userId;
         $token = sha1($str);
-        Cache::set('user' . $token, $userId, 1800);
+        Cache::set('user' . $token, $userId, 86400);
         return $token;
     }
 
@@ -176,22 +179,22 @@ class Base extends Controller
                 case 0:
                     break;
                 case 1:
-                    $where['is_old'] = 1;
+                    $where['is_old'] = ['>', 0];
                     break;
                 case 2:
-                    $where['is_popular'] = 1;
+                    $where['is_popular'] = ['>', 0];
                     break;
                 case 3:
-                    $where['is_dj'] = 1;
+                    $where['is_dj'] = ['>', 0];
                     break;
                 case 4:
-                    $where['is_classical'] = 1;
+                    $where['is_classical'] = ['>', 0];
                     break;
                 case 5:
-                    $where['is_flok'] = 1;
+                    $where['is_flok'] = ['>', 0];
                     break;
                 case 6:
-                    $where['is_rap'] = 1;
+                    $where['is_rap'] = ['>', 0];
                     break;
                 case 7:
                     $where['is_new'] = 1;
@@ -221,6 +224,16 @@ class Base extends Controller
         } catch (Exception $e) {
             return null;
         }
+    }
+
+    //获取用户名
+    public function getUserName($userId, $isEncrypt = true)
+    {
+        $user = Db::name('user')->where('user_id', $userId)->find();
+        if (empty($user)) {
+            return '';
+        }
+        return empty($user['nick_name']) ? substr_replace($user['mobile'], '*****', 3, -3) : $user['nick_name'];
     }
 
 }

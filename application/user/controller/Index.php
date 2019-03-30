@@ -14,10 +14,12 @@ use think\Db;
 class Index extends Userbase
 {
 
+    //获取用户信息
     public function index()
     {
         $user = $this->getLoginUser();
         $user['nick_name'] = empty($user['nick_name']) ? $user['mobile'] : $user['nick_name'];
+        $user['create_at'] = date('Y-m-d H:i:s', strtotime($user['create_at']));
         unset($user['password']);
         return $this->successJson($user);
     }
