@@ -49,6 +49,10 @@ class Music extends Adminbase
         $data['is_rap'] = $this->getParam('is_rap',0,'int');
         $data['is_new'] = $this->getParam('is_new',0,'int');
         $data['order_by'] = $this->getParam('order_by',0,'int');
+        //歌曲属性的权重和必须等于100
+        if((int)($data['is_old'] + $data['is_popular']+ $data['is_dj']+ $data['is_classical']+ $data['is_flok']+ $data['is_rap']) != 100){
+            return $this->returnJson('歌曲属性的权重和必须等于100');
+        }
         if(empty($data['song_name']) || empty($data['singer'])){
             return $this->returnJson('歌名和歌手不能为空');
         }
@@ -136,6 +140,10 @@ class Music extends Adminbase
         $song['is_rap'] = $this->getParam('is_rap',0,'int');
         $song['is_new'] = $this->getParam('is_new',0,'int');
         $song['order_by'] = $this->getParam('order_by',0,'int');
+        //歌曲属性的权重和必须等于100
+        if((int)($song['is_old'] + $song['is_popular']+ $song['is_dj']+ $song['is_classical']+ $song['is_flok']+ $song['is_rap']) != 100){
+            return $this->returnJson('歌曲属性的权重和必须等于100');
+        }
         if(empty($song['song_name']) || empty($song['singer'])){
             return $this->returnJson('歌名和歌手不能为空');
         }

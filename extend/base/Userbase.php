@@ -14,9 +14,7 @@ use think\Exception;
 
 class Userbase extends Base
 {
-    protected $_api = array(
-
-    );
+    protected $_api = array();
 
     protected function _initialize()
     {
@@ -54,23 +52,17 @@ class Userbase extends Base
         return false;
     }
 
-    /**
-     * 获取登陆用户
-     * @return array|false|null|\PDOStatement|string|\think\Model
-     */
-    public function getLoginUser()
+    //用户登出清除缓存
+    public function logoutUser($userId)
     {
+        $code = Cache::get('userCode' . $userId);
         $token = $this->getParam('token');
-        $userId = Cache::get('user' . $token);
-        if (empty($userId)) {
-            return null;
+        if (!$token) {
+            $token = sha1($code . $userId);
         }
-        try{
-            $user = Db::name('user')->where('user_id', $userId)->find();
-            return $user;
-        }catch (Exception $e){
-            return null;
-        }
+        Cache::rm('userCode' . $userId);
+        Cache::rm('user' . $token);
+        return true;
     }
 
 }

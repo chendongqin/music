@@ -5,28 +5,33 @@
  * Date: 2018/3/4
  * Time: 19:38
  */
+
 namespace base;
+
 use think\Cache;
 use think\Controller;
-use think\Session;
+use think\Db;
 use ku\Tool;
-class Base extends Controller{
+use think\Exception;
+
+class Base extends Controller
+{
 
     //音乐类型
     protected $_musicTypes = [
-        '全部','经典老歌','流行音乐','DJ','古典音乐','民谣','说唱','新歌',
+        '全部', '经典老歌', '流行音乐', 'DJ', '古典音乐', '民谣', '说唱', '新歌',
     ];
 
     protected $_musicLanguages = [
-        '中文','方言','英文','韩语','日语','俄语','其他',
+        '中文', '方言', '英文', '韩语', '日语', '俄语', '其他',
     ];
 
     protected $_musicOrigins = [
-        'CD','WAVE','AIFF','MPEG','MP3','MPEG-4','MIDI','WMA','RealAudio','VQF','AMR','APE','AAC'
+        'CD', 'WAVE', 'AIFF', 'MPEG', 'MP3', 'MPEG-4', 'MIDI', 'WMA', 'RealAudio', 'VQF', 'AMR', 'APE', 'AAC'
     ];
 
     protected $_musicPicture = [
-       'GIF', 'JPG', 'JPEG', 'PNG'
+        'GIF', 'JPG', 'JPEG', 'PNG'
     ];
 
     protected function _initialize()
@@ -41,8 +46,9 @@ class Base extends Controller{
      * @param array $data
      * @return \think\response\Json
      */
-    protected function returnJson($msg='',$code=0,$status = false,$data=array()){
-        $jsonData = array('status'=>$status,'msg'=>$msg,'code'=>$code,'data'=>$data);
+    protected function returnJson($msg = '', $code = 0, $status = false, $data = array())
+    {
+        $jsonData = array('status' => $status, 'msg' => $msg, 'code' => $code, 'data' => $data);
         return json($jsonData);
     }
 
@@ -53,8 +59,9 @@ class Base extends Controller{
      * @param int $code
      * @return \think\response\Json
      */
-    protected function successJson($data=array(),$msg = '成功' , $code=1){
-        $jsonData = array('status'=>true,'msg'=>$msg,'code'=>$code,'data'=>$data);
+    protected function successJson($data = array(), $msg = '成功', $code = 1)
+    {
+        $jsonData = array('status' => true, 'msg' => $msg, 'code' => $code, 'data' => $data);
         return json($jsonData);
     }
 
@@ -65,8 +72,9 @@ class Base extends Controller{
      * @param int $code
      * @return \think\response\Json
      */
-    protected function errorJson($msg = '失败' , $code=0,$data = []){
-        $jsonData = array('status'=>false,'msg'=>$msg,'code'=>$code,'data'=>$data);
+    protected function errorJson($msg = '失败', $code = 0, $data = [])
+    {
+        $jsonData = array('status' => false, 'msg' => $msg, 'code' => $code, 'data' => $data);
         return json($jsonData);
     }
 
@@ -76,10 +84,11 @@ class Base extends Controller{
      * @param string $filter
      * @return mixed
      */
-    protected function getParam($name = '', $default = '', $filter = 'string'){
-       $request = $this->request;
-       $param = $request->param($name , $default, $filter);
-       return $param;
+    protected function getParam($name = '', $default = '', $filter = 'string')
+    {
+        $request = $this->request;
+        $param = $request->param($name, $default, $filter);
+        return $param;
     }
 
     /**获取参数魔术方法
@@ -87,12 +96,13 @@ class Base extends Controller{
      * @param $arguments
      * @return mixed
      */
-    public function __call($name, $arguments){
+    public function __call($name, $arguments)
+    {
         $request = $this->request;
         $paramName = $arguments[0];
         $default = $arguments[1];
         $filter = $arguments[2];
-        $param = $request->$name($paramName,$default,$filter);
+        $param = $request->$name($paramName, $default, $filter);
         return $param;
     }
 
@@ -100,23 +110,25 @@ class Base extends Controller{
      * @param $password
      * @return string
      */
-    protected function createPwd($password){
-        $sha1Code = Tool::randCode(4,false);
-        $pwd = sha1($password.$sha1Code);
-        return $pwd.':'.$sha1Code;
+    protected function createPwd($password)
+    {
+        $sha1Code = Tool::randCode(4, false);
+        $pwd = sha1($password . $sha1Code);
+        return $pwd . ':' . $sha1Code;
     }
 
     /**密码校验
-     * @param $password,加密密码
+     * @param $password ,加密密码
      * @param $virefy，明文密码
      * @return bool
      */
-    protected function virefyPwd($password,$virefy){
-        $codes = explode(':',$password);
+    protected function virefyPwd($password, $virefy)
+    {
+        $codes = explode(':', $password);
         $secretPassword = $codes[0];
-        $sha1Code = isset($codes[1])?$codes[1]:'';
-        $sha1Password = sha1($virefy.$sha1Code);
-        if($secretPassword != $sha1Password){
+        $sha1Code = isset($codes[1]) ? $codes[1] : '';
+        $sha1Password = sha1($virefy . $sha1Code);
+        if ($secretPassword != $sha1Password) {
             return false;
         }
         return true;
@@ -127,10 +139,11 @@ class Base extends Controller{
      * @param array $data
      * @return array|string
      */
-    protected function virefyParams(array $rules,array $data ){
-        $returnData =[];
-        foreach ($rules as $key=>$value){
-            if(!isset($data[$key])){
+    protected function virefyParams(array $rules, array $data)
+    {
+        $returnData = [];
+        foreach ($rules as $key => $value) {
+            if (!isset($data[$key])) {
                 return (string)$value;
             }
             $returnData[$key] = $data[$key];
@@ -139,21 +152,27 @@ class Base extends Controller{
     }
 
     //用户token获取
-    public function userToken($userId){
-        $str = Tool::randCode(8).time().$userId;
+    public function userToken($userId)
+    {
+        //保证登陆一段时间内的token是不变的，减少重复登陆带来更多的存储消耗内存，但是过期或退出登录后改变
+        if (!$code = Cache::get('userCode' . $userId)) {
+            $code = Tool::randCode(8, true, true) . $userId;
+            Cache::set('userCode' . $userId, $code, 1800);
+        }
+        $str = $code . $userId;
         $token = sha1($str);
-        Cache::set('user'.$token,$userId);
+        Cache::set('user' . $token, $userId, 1800);
         return $token;
     }
 
     //音乐条件查询
-    public function typeToWhere($types , $where =[])
+    public function typeToWhere($types, $where = [])
     {
-        if(!is_array($types)){
+        if (!is_array($types)) {
             $types = [$types];
         }
-        foreach ($types as $type){
-            switch ($type){
+        foreach ($types as $type) {
+            switch ($type) {
                 case 0:
                     break;
                 case 1:
@@ -183,6 +202,25 @@ class Base extends Controller{
         }
         return $where;
 
+    }
+
+
+    /**获取登陆用户
+     * @return array|false|null|\PDOStatement|string|\think\Model
+     */
+    public function getLoginUser()
+    {
+        $token = $this->getParam('token');
+        $userId = Cache::get('user' . $token);
+        if (empty($userId)) {
+            return null;
+        }
+        try {
+            $user = Db::name('user')->where('user_id', $userId)->find();
+            return $user;
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
 }

@@ -50,7 +50,7 @@ class Index extends Userbase
     {
         $user = $this->getLoginUser();
         $user['nick_name'] = $this->getParam('nick_name');
-        if(!$user['nick_name']){
+        if (!$user['nick_name']) {
             return $this->errorJson('用户昵称不能为空');
         }
         $res = Db::name('user')->update($user);
@@ -59,6 +59,5 @@ class Index extends Userbase
         }
         return $this->errorJson();
     }
-
 
 }
