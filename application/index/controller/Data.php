@@ -31,4 +31,19 @@ class Data extends Base
         return $this->successJson(['languages' => $this->_musicLanguages]);
     }
 
+    //获取歌手
+    public function getSinger()
+    {
+        $page = $this->getParam('page', 1, 'int');
+        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $where = ['is_del'=>0];
+        $singers = Db::name('song')
+            ->where($where)
+            ->group('singer')
+            ->field('singer')
+            ->paginate($pageLimit, false, array('page' => $page))
+            ->toArray();
+        return $this->successJson($singers['data']);
+    }
+
 }

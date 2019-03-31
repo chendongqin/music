@@ -9,6 +9,7 @@
 namespace app\index\controller;
 
 use base\Base;
+use ku\Algo;
 use think\Db;
 
 class Song extends Base
@@ -47,7 +48,7 @@ class Song extends Base
         $selectIn = $this->getParam('selectIn', 0, 'int');
         $where = 'is_del = 0 ';
         if ($select) {
-            $where .= " and (singer like '%".$select."%' or song_name like '%".$select."%' or album_name like '%".$select."%')";
+            $where .= " and (singer like '%" . $select . "%' or song_name like '%" . $select . "%' or album_name like '%" . $select . "%')";
         }
         if ($selectIn) {
             $page = 1;
@@ -70,13 +71,28 @@ class Song extends Base
         return $this->successJson($pager['data']);
     }
 
-    //热搜榜
+    //热播榜
     public function hot()
     {
         $page = $this->getParam('page', 1, 'int');
         $pageLimit = $this->getParam('pageLimit', 20, 'int');
         $where = ['is_del' => 0];
-        $order = 'select_num desc ,order_by desc';
+        $order = 'played desc ,song_id desc';
+        $pager = Db::name('song')
+            ->where($where)
+            ->order($order)
+            ->paginate($pageLimit, false, array('page' => $page))
+            ->toArray();
+        return $this->successJson($pager['data']);
+    }
+
+    //热搜榜
+    public function hotselect()
+    {
+        $page = $this->getParam('page', 1, 'int');
+        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $where = ['is_del' => 0];
+        $order = 'select_num desc ,song_id desc';
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
@@ -91,7 +107,7 @@ class Song extends Base
         $page = $this->getParam('page', 1, 'int');
         $pageLimit = $this->getParam('pageLimit', 20, 'int');
         $where = ['is_del' => 0];
-        $order = 'comments_score desc ,order_by desc';
+        $order = 'comments_score desc ,song_id desc';
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
@@ -205,6 +221,14 @@ class Song extends Base
             $data[$key] = $datum;
         }
         return $this->successJson($data);
+    }
+
+    //获取推荐歌曲
+    public function groom()
+    {
+        $user = $this->getLoginUser();
+        $songs = Algo::groom($user);
+        return $this->successJson($songs);
     }
 
 }
