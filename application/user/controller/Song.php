@@ -219,5 +219,68 @@ class Song extends Userbase
         return $this->successJson();
     }
 
+    //播放列表
+    public function playlist(){
+        $user = $this->getLoginUser();
+        $page = $this->getParam('page', 1, 'int');
+        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $where = ['user_id' => $user['user_id']];
+        $order = 'list_id desc';
+        $pager = Db::table('mu_loves')
+            ->where($where)
+            ->order($order)
+            ->paginate($pageLimit, false, array('page' => $page))
+            ->toArray();
+        $data = [];
+        foreach ($pager['data'] as $datum){
+            $song = Db::name('song')->where('song_id',$datum['song_id'])->find();
+            $data[] = $song;
+        }
+        return $this->successJson($data);
+    }
+
+    //添加播放歌曲ids为歌曲id用,隔开
+    public function addplaylist(){
+        $user = $this->getLoginUser();
+        $ids = $this->getParam('ids','','string');
+        $ids = explode(',',$ids);
+        if(empty($ids)){
+            return $this->errorJson('没有选择音乐');
+        }
+        $insertData = ['user_id'=>$user['user_id']];
+        foreach ($ids as $id){
+            if(Db::name('song')->where(['song_id'=>$id,'is_del'=>0])){
+                return $this->errorJson('参数错误');
+            }
+            $exist = Db::name('play_list')->where(['user_id'=>$user['user_id'],'song_id'=>$id])->find();
+            if($exist){
+                continue;
+            }
+            $insertData['song_id'] = $id;
+            Db::name('play_list')->insert($insertData);
+        }
+        return $this->successJson('成功');
+    }
+
+    //删除播放歌曲ids为歌曲id用,隔开
+    public function delplaylist(){
+        $user = $this->getLoginUser();
+        $ids = $this->getParam('ids','','string');
+        $res = Db::name('play_list')->where('list_id in('.$ids.') and user_id='.$user['user_id'])->delete();
+        if($res){
+            return $this->successJson('成功');
+        }
+        return $this->errorJson();
+    }
+
+    //清空播放列表
+    public function delall(){
+        $user = $this->getLoginUser();
+        $res = Db::name('play_list')->where('user_id',$user['user_id'])->delete();
+        if($res){
+            return $this->successJson('成功');
+        }
+        return $this->errorJson();
+    }
 
 }

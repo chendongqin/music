@@ -68,7 +68,11 @@ class Algo
         if (!$interesting['love_singer']) {
             $loveSongs = self::getLoveSinger($interesting['love_singer']);
             shuffle($loveSongs);
-            $divideNum = (int)(count($loveSongs) / 10);
+            if(count($loveSongs) >=50){
+                $divideNum = 5;
+            }else{
+                $divideNum = (int)(count($loveSongs) / 10);
+            }
             $songs = self::divide($loveSongs, $divideNum, $songs);
         }
         if ($interesting['love_new']) {
@@ -166,7 +170,7 @@ class Algo
     }
 
     //获取新歌
-    public static function getNews($num = 80)
+    public static function getNews($num = 800)
     {
         $where = array('is_del' => 0, 'is_new' => 1);
         $order = 'song_id desc';
@@ -179,7 +183,7 @@ class Algo
     }
 
     //获取热歌
-    public static function getHots($num = 60)
+    public static function getHots($num = 1000)
     {
         $where = array('is_del' => 0);
         $order = 'played desc,song_id desc';
@@ -192,7 +196,7 @@ class Algo
     }
 
     //获取高分歌
-    public static function getScores($num = 80)
+    public static function getScores($num = 1000)
     {
         $where = array('is_del' => 0);
         $order = 'comments_score desc,order_by desc';
@@ -205,7 +209,7 @@ class Algo
     }
 
     //获取语言歌
-    public static function getLanguages($language = '英文', $num = 50)
+    public static function getLanguages($language = '英文', $num = 500)
     {
         $where = array('is_del' => 0, 'language' => $language);
         $order = 'comments_score desc,played desc';
@@ -218,7 +222,7 @@ class Algo
     }
 
     //获取专辑歌
-    public static function getAlbums($num = 50)
+    public static function getAlbums($num = 500)
     {
         $where = array('is_del' => 0, 'album_id' => ['>', 0]);
         $order = 'played desc';
@@ -231,7 +235,7 @@ class Algo
     }
 
     //获取属性歌
-    public static function getTypes($type = 'is_old', $byScore = false, $high = 50, $num = 40)
+    public static function getTypes($type = 'is_old', $byScore = false, $high = 60, $num = 1000)
     {
         $where = array('is_del' => 0, $type => ['>', $high]);
         $order = $byScore ? 'comments_score desc,order_by desc' : 'played desc,order_by desc';
@@ -243,7 +247,7 @@ class Algo
         return $songs;
     }
 
-    public static function getLoveSinger($singers, $num = 50)
+    public static function getLoveSinger($singers, $num = 500)
     {
         $songs = [];
         if (empty($singers)) {
