@@ -95,10 +95,10 @@ class Music extends Adminbase
             return $this->returnJson($songOrigin->getError());
         }
         $filenameArr = explode('.',$filename);
-        if(!in_array(strtoupper(end($filenameArr)),$this->_musicOrigins)){
+        if(!in_array(strtoupper(end($filenameArr)),$this->_musicPicture)){
             @unlink(ROOT_PATH.'public'.$data['song_origin']);
             @unlink(ROOT_PATH.'public'.DS.'uploads'.DS.'music_picture'.DS.date('Ym').DS.$filename);
-            return $this->returnJson('音乐图片文件类型为：'.implode('，',$this->_musicOrigins));
+            return $this->returnJson('音乐图片文件类型为：'.implode('，',$this->_musicPicture));
         }
         $data['song_picture'] = DS.'uploads'.DS.'music_origin'.DS.date('Ym').DS.$filename;
         Db::startTrans();

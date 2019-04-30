@@ -67,9 +67,9 @@ class Album extends Adminbase
             return $this->returnJson($songOrigin->getError());
         }
         $filenameArr = explode('.', $filename);
-        if (!in_array(strtoupper(end($filenameArr)), $this->_musicOrigins)) {
+        if (!in_array(strtoupper(end($filenameArr)), $this->_musicPicture)) {
             @unlink(ROOT_PATH . 'public' . DS . 'uploads' . DS . 'music_picture' . DS . date('Ym') . DS . $filename);
-            return $this->returnJson('图片文件类型为：' . implode('，', $this->_musicOrigins));
+            return $this->returnJson('图片文件类型为：' . implode('，', $this->_musicPicture));
         }
         $data['album_picture'] = DS . 'uploads' . DS . 'music_picture' . DS . date('Ym') . DS . $filename;
         Db::startTrans();
