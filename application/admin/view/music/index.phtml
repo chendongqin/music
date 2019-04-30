@@ -1,13 +1,256 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>测试</title>
-</head>
-<body>
-    <form action="/admin/music/add" method="post" enctype="multipart/form-data">
-        <input type="file" name="songOrigin" >
-        <input type="submit" value="提交">
-    </form>
-</body>
-</html>
+{include file="../application/index/view/public/header.phtml" /}
+<div class="page-container page-width">
+  {include file="../application/index/view/public/sidebar.phtml" /}
+  <div class="main-content">
+    {include file="../application/index/view/public/info.phtml" /}
+    <ol class="breadcrumb bc-3">
+      <li>
+        <a href="/admin/index"><i class="entypo-home"></i>首页</a>
+      </li>
+      <li class="active">
+        <strong>音乐列表</strong>
+      </li>
+    </ol>
+    <div class="dataTables_wrapper form-inline">
+      <div class="row screen-sm">
+        <div class="col-lg-12">
+          <div class="pull-right">
+            <a class="btn btn-green btn-sm" id="showAddMusicModal">添加音乐</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped datatable dataTable text-nowrap custom-table-font-size">
+        <thead class="th-color">
+          <tr>
+            <th>歌曲名称</th>
+            <th>歌手</th>
+            <th>专辑名称</th>
+            <th>语言</th>
+            <th>创建时间</th>
+            <td>发布时间</td>
+            <td>播放量</td>
+            <td>喜欢数量</td>
+            <td>评论人数</td>
+            <td>总评分</td>
+            <td>被搜索次数</td>
+            <td>操作</td>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if(!empty($pager['data'])):?>
+            <?php foreach ($pager['data'] as $key=>$data):?>
+              <tr role="row">
+                <td><?php echo $data['song_name'];?></td>
+                <td><?php echo $data['singer'];?></td>
+                <td><?php echo $data['album_name'];?></td>
+                <td><?php echo $data['language'];?></td>
+                <td><?php echo $data['create_at'];?></td>
+                <td><?php echo $data['issue_time'];?></td>
+                <td><?php echo $data['played'];?></td>
+                <td><?php echo $data['love'];?></td>
+                <td><?php echo $data['comments_num'];?></td>
+                <td><?php echo $data['comments_score'];?></td>
+                <td><?php echo $data['select_num'];?></td>
+                <th><a class="btn btn-red btn-sm delMusic" data-id="<?php echo $data['song_id'];?>">删除</a></th>
+              </tr>
+            <?php endforeach;?>
+          <?php else:?>
+            <td colspan="12" style="text-align: center;">暂无信息</>
+          <?php endif;?>
+        </tbody>
+      </table>
+    </div>
+    {include file="../application/index/view/public/pager.phtml" /}
+  </div>
+
+  <!-- 添加弹窗 start -->
+  <div class="modal fade" id="addMusicModal">
+    <div class="modal-dialog custom-modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4>添加商品信息</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal form-groups-bordered form-static" enctype="multipart/form-data" id="addForm">
+            <div class="form-group">
+              <label class="control-label col-md-3" for="song_name">歌曲名称</label>
+              <div class="col-md-6">
+                <input type="text" name="song_name" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="singer">歌手</label>
+              <div class="col-md-6">
+                <input type="text" name="singer" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="album_id">专辑Id</label>
+              <div class="col-md-6">
+                <input type="text" name="album_id" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="issue_time">发布时间</label>
+              <div class="col-md-6">
+                <input type="text" class="form-control datepicker" data-format="yyyy-MM-dd" data-callback="rangeChange" name="issue_time">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_old">老歌权重</label>
+              <div class="col-md-6">
+                <input type="text" name="is_old" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_popular">流行音乐权重</label>
+              <div class="col-md-6">
+                <input type="text" name="is_popular" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_dj">Dj权重</label>
+              <div class="col-md-6">
+                <input type="text" name="is_dj" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_classical">古典音乐权重</label>
+              <div class="col-md-6">
+                <input type="text" name="is_classical" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_flok">民谣权重</label>
+              <div class="col-md-6">
+                <input type="text" name="is_flok" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_rap">说唱权重</label>
+              <div class="col-md-6">
+                <input type="text" name="is_rap" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_new">是否新歌</label>
+              <div class="col-sm-9">
+                <label class="radio-inline">
+                  <input type="radio" name="is_new" value="0">否
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="is_new" value="1" checked>是
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="lyrics">歌词</label>
+              <div class="col-md-6">
+                <textarea class="form-control" name="lyrics"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="img">歌曲封面</label>
+              <div class="col-md-6">
+                <input type="file" name="" id="addSongPicture">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="video">歌曲源文件</label>
+              <div class="col-md-6">
+                <input type="file" name="" id="addSongVideo">
+              </div>
+            </div>
+            <!-- <div class="form-group">
+              <label class="control-label col-md-3" for="stock">库存量</label>
+              <div class="col-md-6">
+                <input type="text" name="stock" class="form-control">
+              </div>
+            </div> -->
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-info" id="addMusic">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 添加弹窗 end -->
+</div>
+<script type="text/javascript">
+  (() => {
+    // 添加商品
+    $('#showAddMusicModal').click(() => {
+      $('#addMusicModal').modal('show');
+    });
+    $('#addMusic').click(() => {
+      // const formData = $('#addForm')[0].getFormData();
+      // console.log(formData);
+      const params = $('#addForm').serializeArray();
+      let formData = new FormData();
+      formData.append("songPicture", $("#addSongPicture")[0].files[0]);
+      formData.append("songOrigin", $("#addSongVideo")[0].files[0]);
+      for (let i in params) {
+        formData.append(params[i].name, params[i].value)
+      }
+      $.ajax({
+        url: "/admin/music/add",
+        type: "post",
+        data: formData,
+        async: true,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(res){
+          console.log(res);
+        },
+        error: function(err){
+          console.log(err);
+        }
+      })
+    });
+    // 获取商品详情
+    $('.editInfo').click(function() {
+      const params = {
+        id: $(this).attr('data-id')
+      }
+      $.post('/admin/goods/getgoods', params, (res) => {
+        $('#eId').val(res.data.id);
+        $('#editForm input[name="name"]').val(res.data.goods_name);
+        $('#editForm input[name="price"]').val(res.data.price);
+        $('#editForm textarea[name="describe"]').val(res.data.describe);
+        $('#editGoodsModal').modal('show');
+      });
+    });
+    // 修改商品信息
+    $('#editGoods').click(function() {
+      const params = $('#editForm').serializeArray();
+      $.post('/admin/goods/update', params, (res) => {
+        if (res.status === true) {
+          location.reload();
+        } else {
+          alert(res.msg);
+        }
+      });
+    });
+    // 下架商品
+    $('.goodsDown').click(function() {
+      if (confirm('确定下架该商品？')) {
+        const params = {
+          id: $(this).attr('data-id')
+        }
+        $.post('/admin/goods/down', params, (res) => {
+          if (res.status === true) {
+            location.reload();
+          } else {
+            alert(res.msg);
+          }
+        })
+      }
+    });
+  })();
+</script>
+{include file="../application/index/view/public/footer.phtml" /}

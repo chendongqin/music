@@ -1,0 +1,114 @@
+{include file="../application/index/view/public/header.phtml" /}
+<div class="page-container page-width">
+  {include file="../application/index/view/public/sidebar.phtml" /}
+  <div class="main-content">
+    {include file="../application/index/view/public/info.phtml" /}
+    <ol class="breadcrumb bc-3">
+      <li>
+        <a href="/admin/index"><i class="entypo-home"></i>首页</a>
+      </li>
+      <li class="active">
+        <strong>管理员列表</strong>
+      </li>
+    </ol>
+    <div class="dataTables_wrapper form-inline">
+      <div class="row screen-sm">
+        <div class="col-lg-12">
+          <div class="pull-right">
+            <a class="btn btn-green btn-sm" id="showAddAdminModal">添加管理员</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped datatable dataTable text-nowrap custom-table-font-size">
+        <thead class="th-color">
+          <tr>
+            <th>帐号</th>
+            <th>上次登录时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if(!empty($pager['data'])):?>
+            <?php foreach ($pager['data'] as $key=>$data):?>
+              <tr role="row">
+                <td><?php echo $data['login_name'];?></td>
+                <td><?php echo date('Y-m-d H:i:s', $data['login_at']);?></td>
+                <th><a class="btn btn-red btn-sm delAdmin" data-id="<?php echo $data['id'];?>">删除</a></th>
+              </tr>
+            <?php endforeach;?>
+          <?php else:?>
+            <td colspan="3" style="text-align: center;">暂无信息</>
+          <?php endif;?>
+        </tbody>
+      </table>
+    </div>
+    {include file="../application/index/view/public/pager.phtml" /}
+  </div>
+  <div class="modal fade" id="addAdminModal">
+    <div class="modal-dialog custom-modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4>添加管理员</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal form-groups-bordered form-static" id="addForm">
+            <div class="form-group">
+              <label class="control-label col-md-3" for="name">姓名</label>
+              <div class="col-md-6">
+                <input type="text" name="name" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="password">密码</label>
+              <div class="col-md-6">
+                <input type="password" name="password" class="form-control">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-info" id="addAdmin">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  (() => {
+    // 添加管理员
+    $('#showAddAdminModal').click(() => {
+      $('#addAdminModal').modal('show');
+    });
+    $('#addAdmin').click(() => {
+      const params = $('#addForm').serializeArray();
+      $.post('/admin/index/add', params, (res) => {
+        if (res.status === true) {
+          location.reload();
+        } else {
+          alert(res.msg);
+        }
+      });
+    });
+    // 删除管理员
+    $('.delAdmin').click(function() {
+      if (window.confirm('确定删除该帐号？')) {
+        const params = {
+          id: $(this).attr('data-id')
+        }
+        console.log(params);
+        $.post('/admin/index/delete', params, (res) => {
+        if (res.status === true) {
+          location.reload();
+        } else {
+          alert(res.msg);
+        }
+      });
+      }
+    });
+  })();
+</script>
+{include file="../application/index/view/public/footer.phtml" /}

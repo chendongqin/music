@@ -37,7 +37,7 @@ class Index extends Adminbase
         $sure = $this->getParam('sure','','string');
         $admin = Session::get('admin');
         $admin = $admin[0];
-        if(!$this->virefyPwd($admin['password'],$pwd)){
+;        if(!$this->virefyPwd($admin['password'],$pwd)){
             return $this->returnJson('原密码不正确');
         }
         if($newpwd != $sure){
@@ -69,14 +69,15 @@ class Index extends Adminbase
 
     public function add(){
         $name = $this->getParam('name');
-        $nick = $this->getParam('nick_name');
+        // $nick = $this->getParam('nick_name');
         $password = $this->getParam('password');
         if(empty($name) || empty($password)){
             return $this->returnJson('用户名和密码不能为空');
         }
         $data = array(
-            'nick_name'=>$nick,
+            // 'nick_name'=>$nick,
             'login_name'=>$name,
+            'admin_name'=>$name,
             'password'=>$this->createPwd($password),
         );
         $res = Db::name('admin')->insert($data);

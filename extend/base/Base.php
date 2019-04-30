@@ -125,13 +125,12 @@ class Base extends Controller
      * @param $virefy，明文密码
      * @return bool
      */
-    protected function virefyPwd($password, $virefy)
-    {
-        $codes = explode(':', $password);
+    protected function virefyPwd($password,$virefy){
+        $codes = explode(':',$password);
         $secretPassword = $codes[0];
-        $sha1Code = isset($codes[1]) ? $codes[1] : '';
-        $sha1Password = sha1($virefy . $sha1Code);
-        if ($secretPassword != $sha1Password) {
+        $sha1Code = isset($codes[1])?$codes[1]:'';
+        $sha1Password = sha1($virefy.$sha1Code);
+        if($secretPassword != $sha1Password){
             return false;
         }
         return true;

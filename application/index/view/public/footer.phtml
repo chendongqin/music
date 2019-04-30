@@ -1,26 +1,68 @@
-{load href="/static/css/footer.css"}
-<div class="footer">
-    <div class=" footer-top">
-        <div class="footer-top-left" >
-            <div class="image-text">
-                <img src="/static/image/logo.png" width="100px">
-                <span>BasketballClubs</span>
-            </div>
-            <div class="footer-top-left-div">@篮球赛事系统</div>
+<div class="modal fade" id="editPwdModal">
+      <div class="modal-dialog custom-modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4>修改密码</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal form-groups-bordered form-static" id="pwdForm">
+              <div class="form-group">
+                <label class="control-label col-md-3" for="pwd">原密码</label>
+                <div class="col-md-6">
+                  <input type="password" name="pwd" class="form-control">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="newpwd">新密码</label>
+                <div class="col-md-6">
+                  <input type="password" name="newpwd" class="form-control">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="sure">确认密码</label>
+                <div class="col-md-6">
+                  <input type="password" name="sure" class="form-control">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-info" id="editPwd">修改</button>
+          </div>
         </div>
-        <div class="footer-top-right" >
-            <div>关于我们</div>
-            <img src="/static/image/jmu.png"width="100px">
-        </div>
-        <div class="footer-top-left footer-top-right2" >
-            <span>集美大学计算机工程学院毕业设计</span>
-        </div>
+      </div>
     </div>
-    <div class="footer-bottom">
-        <div>厦门市集美区集美大学计算机工程学院</div>
-        <div>@jmu201421121047</div>
-    </div>
-</div>
-
-</body>
+    <script type="text/javascript">
+      (() => {
+        $('#showPwdModal').click(() => {
+          $('#editPwdModal').modal('show');
+        });
+        $('#editPwd').click(() => {
+          const params = $('#pwdForm').serializeArray();
+          $.post('/' + $('#showPwdModal').attr('data-type') + '/index/changepw', params, (res) => {
+            if (res.status === true) {
+              location.reload();
+            } else {
+              alert(res.msg);
+            }
+          });
+        })
+      })();
+    </script>
+    <script src="/assets/js/gsap/main-gsap.js" id="script-resource-1"></script>
+    <script src="/assets/js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js" id="script-resource-2"></script>
+    <script src="/assets/js/bootstrap.js" id="script-resource-3"></script>
+    <script src="/assets/js/joinable.js" id="script-resource-4"></script>
+    <script src="/assets/js/resizeable.js" id="script-resource-5"></script>
+    <script src="/assets/js/neon-api.js" id="script-resource-6"></script>
+    <script src="/assets/js/neon-custom.js" id="script-resource-10"></script>
+    <script src="/plugins/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="/assets/js/daterangepicker/daterangepicker.js"></script>
+    <script src="/assets/js/bootstrap-datepicker.js"></script>
+    <script src="/assets/js/bootstrap-colorpicker.min.js"></script>
+    <script src="/assets/js/bootstrap-timepicker.min.js"></script>
+    <script src="/assets/js/daterangepicker/moment.min.js"></script>
+    <script src="/assets/js/daterangepicker/daterangepicker.js"></script>
+  </body>
 </html>
