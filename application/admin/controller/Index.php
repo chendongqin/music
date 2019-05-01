@@ -69,6 +69,11 @@ class Index extends Adminbase
 
     public function add(){
         $name = $this->getParam('name');
+        $admin = Session::get('admin');
+        $admin = $admin[0];
+        if($admin['id'] != 1){
+            return $this->returnJson('您没有权限添加管理员');
+        }
         // $nick = $this->getParam('nick_name');
         $password = $this->getParam('password');
         if(empty($name) || empty($password)){
