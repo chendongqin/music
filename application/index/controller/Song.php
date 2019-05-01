@@ -74,46 +74,58 @@ class Song extends Base
     //热播榜
     public function hot()
     {
-        $page = $this->getParam('page', 1, 'int');
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['is_del' => 0];
         $order = 'played desc ,song_id desc';
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
-            ->paginate($pageLimit, false, array('page' => $page))
-            ->toArray();
-        return $this->successJson($pager['data']);
+            ->limit($pageLimit)
+            ->select();
+        return $this->successJson($pager);
     }
 
     //热搜榜
     public function hotselect()
     {
-        $page = $this->getParam('page', 1, 'int');
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['is_del' => 0];
         $order = 'select_num desc ,song_id desc';
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
-            ->paginate($pageLimit, false, array('page' => $page))
-            ->toArray();
-        return $this->successJson($pager['data']);
+            ->limit($pageLimit)
+            ->select();
+        return $this->successJson($pager);
     }
 
     //高分榜
     public function hscore()
     {
-        $page = $this->getParam('page', 1, 'int');
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['is_del' => 0];
         $order = 'comments_score desc ,song_id desc';
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
-            ->paginate($pageLimit, false, array('page' => $page))
-            ->toArray();
-        return $this->successJson($pager['data']);
+            ->limit($pageLimit)
+            ->select();
+        return $this->successJson($pager);
+    }
+
+    //新歌榜
+    public function newscore()
+    {
+//        $page = $this->getParam('page', 1, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
+        $where = ['is_del' => 0 ,'is_new'=>1];
+        $order = 'comments_score desc ,song_id desc';
+        $pager = Db::name('song')
+            ->where($where)
+            ->order($order)
+            ->limit($pageLimit)
+            ->select();
+        return $this->successJson($pager);
     }
 
     //专辑歌曲
