@@ -93,7 +93,7 @@ class Album extends Adminbase
     public function update()
     {
         $album_id = $this->getParam('album_id', 0, 'int');
-        if (!$album = Db::name('song')->where('song_id', $album_id)->find()) {
+        if (!$album = Db::name('album')->where('album_id', $album_id)->find()) {
             return $this->returnJson('歌曲不存在');
         }
         $album['album_name'] = $this->getParam('album_name');
@@ -140,8 +140,11 @@ class Album extends Adminbase
         if (empty($song_ids))
             return $this->returnJson('加入专辑的歌曲不能为空');
         $album_id = $this->getParam('album_id', 0, 'int');
-        if (!$album = Db::name('song')->where('song_id', $album_id)->find()) {
+        if (!$album = Db::name('song')->where('song_id', $song_ids)->find()) {
             return $this->returnJson('歌曲不存在');
+        }
+        if (!$album = Db::name('album')->where('album_id', $album_id)->find()) {
+            return $this->returnJson('专辑不存在');
         }
         $res = Db::name('song')
             ->where('song_id in(' . $song_ids . ')')

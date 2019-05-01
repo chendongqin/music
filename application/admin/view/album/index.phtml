@@ -1,0 +1,301 @@
+{include file="../application/index/view/public/header.phtml" /}
+<div class="page-container page-width">
+  {include file="../application/index/view/public/sidebar.phtml" /}
+  <div class="main-content">
+    {include file="../application/index/view/public/info.phtml" /}
+    <ol class="breadcrumb bc-3">
+      <li>
+        <a href="/admin/index"><i class="entypo-home"></i>首页</a>
+      </li>
+      <li class="active">
+        <strong>专辑列表</strong>
+      </li>
+    </ol>
+    <div class="dataTables_wrapper form-inline">
+      <div class="row screen-sm">
+        <div class="col-lg-12">
+          <div class="pull-right">
+            <a class="btn btn-green btn-sm" id="showAddAlbumModal">添加专辑</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped datatable dataTable text-nowrap custom-table-font-size">
+        <thead class="th-color">
+          <tr>
+            <th>专辑ID</th>
+            <th>专辑名称</th>
+            <th>作者</th>
+            <th>歌曲数量</th>
+            <th>是否新专辑</th>
+            <th>语言</th>
+            <th>发布时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if(!empty($pager['data'])):?>
+            <?php foreach ($pager['data'] as $key=>$data):?>
+              <tr role="row">
+                <td><?php echo $data['album_id'];?></td>
+                <td><?php echo $data['album_name'];?></td>
+                <td><?php echo $data['author'];?></td>
+                <td><?php echo $data['song_num'];?></td>
+                <td>
+                  <?php if($data['is_new'] == 0):?>
+                    <?php echo '否';?>
+                  <?php else:?>
+                    <?php echo '是';?>
+                  <?php endif;?>
+                </td>
+                <td><?php echo $data['language'];?></td>
+                <td><?php echo $data['issue_time'];?></td>
+                <th>
+                  <a class="btn btn-info btn-sm addMusic" data-id="<?php echo $data['album_id'];?>">添加音乐</a>
+                  <a class="btn btn-info btn-sm editAlbum" data-info="<?php echo implode(',', $data);?>">修改</a>
+                  <a class="btn btn-red btn-sm delAlbum" data-id="<?php echo $data['album_id'];?>">删除</a>
+                </th>
+              </tr>
+            <?php endforeach;?>
+          <?php else:?>
+            <td colspan="8" style="text-align: center;">暂无信息</>
+          <?php endif;?>
+        </tbody>
+      </table>
+    </div>
+    {include file="../application/index/view/public/pager.phtml" /}
+  </div>
+
+  <!-- 添加专辑弹窗 start -->
+  <div class="modal fade" id="addAlbumModal">
+    <div class="modal-dialog custom-modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4>添加专辑</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal form-groups-bordered form-static" enctype="multipart/form-data" id="addForm">
+            <div class="form-group">
+              <label class="control-label col-md-3" for="album_name">专辑名称</label>
+              <div class="col-md-6">
+                <input type="text" name="album_name" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="author">作者</label>
+              <div class="col-md-6">
+                <input type="text" name="author" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="language">语言</label>
+              <div class="col-md-6">
+                <input type="text" name="language" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="issue_time">发布时间</label>
+              <div class="col-md-6">
+                <input type="text" class="form-control datepicker" data-format="yyyy-MM-dd" data-callback="rangeChange" name="issue_time">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_new">是否新专辑</label>
+              <div class="col-sm-9">
+                <label class="radio-inline">
+                  <input type="radio" name="is_new" value="0">否
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="is_new" value="1" checked>是
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="img">歌曲封面</label>
+              <div class="col-md-6">
+                <input type="file" name="" id="addAlbumPicture">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-info" id="addAlnum">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 添加专辑弹窗 end -->
+
+  <!-- 修改弹窗 start -->
+  <div class="modal fade" id="editAlbumModal">
+    <div class="modal-dialog custom-modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4>修改专辑</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal form-groups-bordered form-static" id="editForm">
+            <input type="hidden" id="album_id" name="album_id">
+            <div class="form-group">
+              <label class="control-label col-md-3" for="album_name">专辑名称</label>
+              <div class="col-md-6">
+                <input type="text" name="album_name" class="form-control" id="album_name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="author">作者</label>
+              <div class="col-md-6">
+                <input type="text" name="author" class="form-control" id="author">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="language">语言</label>
+              <div class="col-md-6">
+                <input type="text" name="language" class="form-control" id="language">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="issue_time">发布时间</label>
+              <div class="col-md-6">
+                <input type="text" class="form-control datepicker" data-format="yyyy-MM-dd" data-callback="rangeChange" name="issue_time" id="issue_time">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3" for="is_new">是否新专辑</label>
+              <div class="col-sm-9">
+                <label class="radio-inline">
+                  <input type="radio" name="is_new" value="0" id="radio0">否
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="is_new" value="1" id="radio1">是
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-info" id="editAlbum">修改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 修改弹窗 end -->
+
+  <!-- 添加弹窗 start -->
+  <div class="modal fade" id="addMusicModal">
+    <div class="modal-dialog custom-modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4>添加音乐</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal form-groups-bordered form-static" id="addMusicForm">
+            <input type="hidden" name="album_id" id="addAlbumId">
+            <div class="form-group">
+              <label class="control-label col-md-3" for="song_ids">音乐ID</label>
+              <div class="col-md-6">
+                <input type="text" name="song_ids" class="form-control">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-info" id="addMusic">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 添加音乐 end -->
+</div>
+<script type="text/javascript">
+  (() => {
+    // 添加专辑
+    $('#showAddAlbumModal').click(() => {
+      $('#addAlbumModal').modal('show');
+    });
+    $('#addAlnum').click(() => {
+      const params = $('#addForm').serializeArray();
+      let formData = new FormData();
+      formData.append("albumPicture", $("#addAlbumPicture")[0].files[0]);
+      for (let i in params) {
+        formData.append(params[i].name, params[i].value)
+      }
+      $.ajax({
+        url: "/admin/album/add",
+        type: "post",
+        data: formData,
+        async: true,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(res){
+          if (res.status === true) {
+            location.reload();
+          } else {
+            alert(res);
+          }
+        },
+        error: function(err){
+          alert(res);
+        }
+      })
+    });
+    // 获取专辑详情
+    $('.editAlbum').click(function() {
+      const arr = $(this).attr('data-info').split(',');
+      $('#album_id').val(arr[0]);
+      $('#album_name').val(arr[1]);
+      $('#author').val(arr[2]);
+      $('#language').val(arr[8]);
+      $('#issue_time').val(arr[10]);
+      $('#radio' + arr[5]).prop('checked', true);
+      $('#editAlbumModal').modal('show');
+    });
+    // 修改专辑信息
+    $('#editAlbum').click(function() {
+      const params = $('#editForm').serializeArray();
+      $.post('/admin/album/update', params, (res) => {
+        if (res.status === true) {
+          location.reload();
+        } else {
+          alert(res);
+        }
+      });
+    });
+    // 添加音乐
+    $('.addMusic').click(function() {
+      $('#addAlbumId').val($(this).attr('data-id'));
+      $('#addMusicModal').modal('show');
+    });
+    $('#addMusic').click(function() {
+      const params = $('#addMusicForm').serializeArray();
+      $.post('/admin/album/addsong', params, (res) => {
+        if (res.status === true) {
+          location.reload();
+        } else {
+          alert(res);
+        }
+      });
+    });
+    // 删除专辑
+    $('.delAlbum').click(function() {
+      if (confirm('确定删除该专辑嘛？')) {
+        const params = {
+          album_id: $(this).attr('data-id')
+        }
+        $.post('/admin/album/delete', params, (res) => {
+          if (res.status === true) {
+            location.reload();
+          } else {
+            alert(res.msg);
+          }
+        })
+      }
+    });
+  })();
+</script>
+{include file="../application/index/view/public/footer.phtml" /}
