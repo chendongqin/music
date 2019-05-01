@@ -119,7 +119,7 @@ class Song extends Base
 //        $page = $this->getParam('page', 1, 'int');
         $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['is_del' => 0 ,'is_new'=>1];
-        $order = 'comments_score desc ,song_id desc';
+        $order = 'played desc ,song_id desc';
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
