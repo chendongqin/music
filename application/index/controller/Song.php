@@ -18,7 +18,7 @@ class Song extends Base
     //歌曲分类进入获取歌曲
     public function index()
     {
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $page = $this->getParam('page', 1, 'int');
         $where = ['is_del' => 0];
         $type = $this->getParam('type', 0, 'int');
@@ -55,7 +55,7 @@ class Song extends Base
             $pageLimit = 5;
         } else {
             $page = $this->getParam('page', 1, 'int');
-            $pageLimit = $this->getParam('pageLimit', 20, 'int');
+            $pageLimit = $this->getParam('pageLimit', 100, 'int');
         }
         $order = 'select_num desc ,order_by desc';
         $pager = Db::name('song')
@@ -141,7 +141,7 @@ class Song extends Base
         );
         $order = 'order_by desc';
         $page = $this->getParam('page', 1, 'int');
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $pager = Db::name('song')
             ->where($where)
             ->order($order)
