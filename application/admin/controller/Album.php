@@ -146,13 +146,57 @@ class Album extends Adminbase
         if (!$album = Db::name('album')->where('album_id', $album_id)->find()) {
             return $this->returnJson('专辑不存在');
         }
+        //开启事务
+        Db::startTrans();
         $res = Db::name('song')
             ->where('song_id in(' . $song_ids . ')')
             ->update(array('album_id' => $album_id, 'album_name' => $album['album_name']));
         if (!$res) {
+            Db::rollback();
             return $this->returnJson('失败');
         }
+        $res = Db::name('album')->where('album_id',$album_id)->setInc('song_num');
+        if (!$res) {
+            Db::rollback();
+            return $this->returnJson('失败');
+        }
+        Db::commit();
         return $this->returnJson('成功', 1001, true);
+    }
+
+    //获取专辑信息
+    public function getalbum(){
+        $id = $this->getParam('album_id',0,'int');
+        $album = Db::name('album')->where(['album_id'=>$id,'is_del'=>0])->find();
+        if(!$album){
+            return $this->returnJson('专辑不存在');
+        }
+        return $this->returnJson('成功',1001,true,$album);
+    }
+
+    //获取专辑列表
+    public function getlists(){
+        $name = $this->getParam('name', '', 'string');
+        $pageLimit = $this->getParam('pageLimit', 15, 'int');
+        $page = $this->getParam('page', 1, 'int');
+        $is_new = $this->getParam('is_new', 100, 'int');
+        $isdel = $this->getParam('isdel', 0, 'int');
+        $where['is_del'] = $isdel;
+        if ($is_new != 100) {
+            $where['is_new'] = $is_new;
+        }
+        if ($name) {
+            $where['album_name|author'] = array('like', $name . '%');
+        }
+        $language = $this->getParam('language', '', 'string');
+        if ($language) {
+            $where['language'] = $language;
+        }
+        $pager = Db::name('album')->where($where)->paginate($pageLimit, false, array('page' => $page))->toArray();
+        $data = [
+            'lists'=>$pager['data'],'page'=>$page, 'musicLanguages'=>$this->_musicLanguages
+        ];
+        return $this->returnJson('成功',1001,true,$data);
     }
 
 }

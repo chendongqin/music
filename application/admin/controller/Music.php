@@ -127,7 +127,7 @@ class Music extends Adminbase
         }
         $song['song_name'] = $this->getParam('song_name');
         $song['singer'] = $this->getParam('singer');
-        $song['album_id'] = $this->getParam('album_id');
+        $album_id = $this->getParam('album_id');
         $song['lyrics'] = $this->getParam('lyrics');
         $song['language'] = $this->getParam('language');
         $issueDate = $this->getParam('issue_time',date('Y-m-d'));
@@ -152,10 +152,29 @@ class Music extends Adminbase
         }
         if(!in_array($song['language'],$this->_musicLanguages))
             $song['language'] = '其他';
+        Db::startTrans();
+        //更换了专辑处理专辑的歌曲数
+        if($album_id != $song['album_id']){
+            //新专辑歌曲数添加1
+            $res = Db::name('album')->where('album_id',$album_id)->setInc('song_num');
+            if(!$res){
+                Db::rollback();
+                return $this->returnJson('失败');
+            }
+            //旧专辑歌曲数减少1
+            $res = Db::name('album')->where('album_id',$song['album_id'])->setDec('song_num');
+            if(!$res){
+                Db::rollback();
+                return $this->returnJson('失败');
+            }
+        }
+        $song['album_id'] = $album_id;
         $res = Db::name('song')->update($song);
         if(!$res){
+            Db::rollback();
             return $this->returnJson('失败');
         }
+        Db::commit();
         return $this->returnJson('成功',1001,true);
     }
 
@@ -172,6 +191,17 @@ class Music extends Adminbase
             return $this->returnJson('失败');
         }
         return $this->returnJson('成功',1001,true);
+    }
+
+
+    //获取专辑信息
+    public function getsong(){
+        $id = $this->getParam('song_id',0,'int');
+        $song = Db::name('song')->where(['song_id'=>$id,'is_del'=>0])->find();
+        if(!$song){
+            return $this->returnJson('歌曲不存在');
+        }
+        return $this->returnJson('成功',1001,true,$song);
     }
 
 
