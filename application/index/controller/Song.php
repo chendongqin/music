@@ -22,11 +22,15 @@ class Song extends Base
         $page = $this->getParam('page', 1, 'int');
         $where = ['is_del' => 0];
         $type = $this->getParam('type', 0, 'int');
+        $singer = $this->getParam('singer', '', 'string');
         $language = $this->getParam('language');
         $order = '';
         if ($type) {
             $where = $this->typeToWhere($type, $where);
             $order = $this->_musicTypesCol[$type] . ' desc';
+        }
+        if($singer){
+            $where['singer'] = $singer;
         }
         if ($language) {
             $where['language'] = $language;
