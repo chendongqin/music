@@ -54,7 +54,7 @@
                 <td><?php echo $data['comments_score'];?></td>
                 <td><?php echo $data['select_num'];?></td>
                 <th>
-                  <a class="btn btn-info btn-sm editMusic">修改</a>
+                  <a class="btn btn-info btn-sm editMusic" data-id="<?php echo $data['song_id'];?>">修改</a>
                   <a class="btn btn-red btn-sm delMusic" data-id="<?php echo $data['song_id'];?>">删除</a>
                 </th>
               </tr>
@@ -194,69 +194,70 @@
         <div class="modal-body">
           <form class="form-horizontal form-groups-bordered form-static" enctype="multipart/form-data" id="editForm">
             <div class="form-group">
+              <input type="hidden" name="song_id" class="form-control" id="song_id">
               <label class="control-label col-md-3" for="song_name">歌曲名称</label>
               <div class="col-md-6">
-                <input type="text" name="song_name" class="form-control">
+                <input type="text" name="song_name" class="form-control" id="song_name">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="singer">歌手</label>
               <div class="col-md-6">
-                <input type="text" name="singer" class="form-control">
+                <input type="text" name="singer" class="form-control" id="singer">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="album_id">专辑Id</label>
               <div class="col-md-6">
-                <input type="text" name="album_id" class="form-control">
+                <input type="text" name="album_id" class="form-control" id="album_id">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="language">语言</label>
               <div class="col-md-6">
-                <input type="text" name="language" class="form-control">
+                <input type="text" name="language" class="form-control" id="language">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="issue_time">发布时间</label>
               <div class="col-md-6">
-                <input type="text" class="form-control datepicker" data-format="yyyy-MM-dd" data-callback="rangeChange" name="issue_time">
+                <input type="text" class="form-control datepicker" data-format="yyyy-MM-dd" data-callback="rangeChange" name="issue_time" id="issue_time">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="is_old">老歌权重</label>
               <div class="col-md-6">
-                <input type="text" name="is_old" class="form-control">
+                <input type="text" name="is_old" class="form-control" id="is_old">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="is_popular">流行音乐权重</label>
               <div class="col-md-6">
-                <input type="text" name="is_popular" class="form-control">
+                <input type="text" name="is_popular" class="form-control" id="is_popular">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="is_dj">Dj权重</label>
               <div class="col-md-6">
-                <input type="text" name="is_dj" class="form-control">
+                <input type="text" name="is_dj" class="form-control" id="is_dj">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="is_classical">古典音乐权重</label>
               <div class="col-md-6">
-                <input type="text" name="is_classical" class="form-control">
+                <input type="text" name="is_classical" class="form-control" id="is_classical">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="is_flok">民谣权重</label>
               <div class="col-md-6">
-                <input type="text" name="is_flok" class="form-control">
+                <input type="text" name="is_flok" class="form-control" id="is_flok">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label col-md-3" for="is_rap">说唱权重</label>
               <div class="col-md-6">
-                <input type="text" name="is_rap" class="form-control">
+                <input type="text" name="is_rap" class="form-control" id="is_rap">
               </div>
             </div>
             <div class="form-group">
@@ -273,19 +274,7 @@
             <div class="form-group">
               <label class="control-label col-md-3" for="lyrics">歌词</label>
               <div class="col-md-6">
-                <textarea class="form-control" name="lyrics"></textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3" for="img">歌曲封面</label>
-              <div class="col-md-6">
-                <input type="file" name="" id="addSongPicture">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3" for="video">歌曲源文件</label>
-              <div class="col-md-6">
-                <input type="file" name="" id="addSongVideo">
+                <textarea class="form-control" name="lyrics" id="lyrics"></textarea>
               </div>
             </div>
           </form>
@@ -332,30 +321,31 @@
         }
       })
     });
-    // // 获取商品详情
-    // $('.editInfo').click(function() {
-    //   const params = {
-    //     id: $(this).attr('data-id')
-    //   }
-    //   $.post('/admin/goods/getgoods', params, (res) => {
-    //     $('#eId').val(res.data.id);
-    //     $('#editForm input[name="name"]').val(res.data.goods_name);
-    //     $('#editForm input[name="price"]').val(res.data.price);
-    //     $('#editForm textarea[name="describe"]').val(res.data.describe);
-    //     $('#editGoodsModal').modal('show');
-    //   });
-    // });
-    // // 修改商品信息
-    // $('#editGoods').click(function() {
-    //   const params = $('#editForm').serializeArray();
-    //   $.post('/admin/goods/update', params, (res) => {
-    //     if (res.status === true) {
-    //       location.reload();
-    //     } else {
-    //       alert(res.msg);
-    //     }
-    //   });
-    // });
+    // 获取商品详情
+    $('.editMusic').click(function() {
+      const params = {
+        song_id: $(this).attr('data-id')
+      }
+      $.post('/admin/music/getsong', params, (res) => {
+        for (let i in res.data) {
+          if ($('#' + i)) {
+            $('#' + i).val(res.data[i])
+          }
+        }
+        $('#editMusicModal').modal('show');
+      });
+    });
+    // 修改商品信息
+    $('#editMusic').click(function() {
+      const params = $('#editForm').serializeArray();
+      $.post('/admin/music/update', params, (res) => {
+        if (res.status === true) {
+          location.reload();
+        } else {
+          alert(res.msg);
+        }
+      });
+    });
     // 删除音乐
     $('.delMusic').click(function() {
       if (confirm('确定删除该音乐嘛？')) {

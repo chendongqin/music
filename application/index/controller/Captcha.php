@@ -33,10 +33,10 @@ class Captcha extends Base
         if (!Verify::isMobile($mobile)) {
             return $this->errorJson('手机号不正确');
         }
-        $virefyCode = Session::get($channel . '_virefy_code');
-        if ($code != strtolower($virefyCode)) {
-            return $this->errorJson('验证码错误');
-        }
+        // $virefyCode = Session::get($channel . '_virefy_code');
+        // if ($code != strtolower($virefyCode)) {
+        //     return $this->errorJson('验证码错误');
+        // }
         $sendVirefy = Cache::get($channel . 'send' . $mobile);
         if ($sendVirefy) {
             return $this->errorJson('发送太频繁');

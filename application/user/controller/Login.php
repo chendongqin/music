@@ -26,10 +26,10 @@ class Login extends Base
         $mobile = $this->getParam('mobile', '');
         $password = $this->getParam('password', '');
         $code = $this->getParam('code', '');
-        $virefyCode = Session::get('login_virefy_code');
-        if(strtolower($virefyCode) != $code){
-            return $this->errorJson('验证码不正确');
-        }
+        // $virefyCode = Session::get('login_virefy_code');
+        // if(strtolower($virefyCode) != $code){
+        //     return $this->errorJson('验证码不正确');
+        // }
         if (empty($password)) {
             return $this->errorJson('请输入密码');
         }
