@@ -222,7 +222,7 @@ class Song extends Base
             return $this->errorJson('歌曲不存在');
         }
         $page = $this->getParam('page', 1, 'int');
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['song_id' => $songId];
         $order = 'create_at desc';
         $pager = Db::name('comments')

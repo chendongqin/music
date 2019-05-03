@@ -55,7 +55,7 @@ class Song extends Userbase
     public function lovelists()
     {
         $page = $this->getParam('page', 1, 'int');
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $user = $this->getLoginUser();
         $where = ['s.is_del' => 0, 'l.user_id' => $user['user_id']];
         $order = 'l.create_at desc';
@@ -223,7 +223,7 @@ class Song extends Userbase
     public function playlist(){
         $user = $this->getLoginUser();
         $page = $this->getParam('page', 1, 'int');
-        $pageLimit = $this->getParam('pageLimit', 20, 'int');
+        $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['user_id' => $user['user_id']];
         $order = 'list_id desc';
         $pager = Db::table('mu_loves')
