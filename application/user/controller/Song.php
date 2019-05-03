@@ -119,12 +119,15 @@ class Song extends Userbase
     {
         $user = $this->getLoginUser();
         $songId = $this->getParam('songId', 0, 'int');
-        if (!$love = Db::name('loves')->where(['user_id' => $user['user_id'], 'song_id' => $songId])) {
+        if (!$love = Db::name('loves')->where(['user_id' => $user['user_id'], 'song_id' => $songId])->find()) {
             return $this->errorJson('喜欢的歌曲不存在');
         }
         $song = Db::name('song')->where(['song_id' => $songId])->find();
+        if(!$song){
+            return $this->errorJson('没有该收藏');
+        }
         Db::startTrans();
-        $res = Db::name('loves')->where('id', $love['id'])->delete();
+        $res = Db::name('loves')->delete($love['id']);
         if (!$res) {
             Db::rollback();
             return $this->errorJson();
