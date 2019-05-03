@@ -100,7 +100,7 @@ class Music extends Adminbase
             @unlink(ROOT_PATH.'public'.DS.'uploads'.DS.'music_picture'.DS.date('Ym').DS.$filename);
             return $this->returnJson('音乐图片文件类型为：'.implode('，',$this->_musicPicture));
         }
-        $data['song_picture'] = DS.'uploads'.DS.'music_origin'.DS.date('Ym').DS.$filename;
+        $data['song_picture'] = DS.'uploads'.DS.'music_picture'.DS.date('Ym').DS.$filename;
         Db::startTrans();
         if(!$singer = Db::name('singer')->where('singer_name',$data['singer'])->find()){
             $res = Db::name('singer')->insert(array('singer_name'=>$data['singer']));
