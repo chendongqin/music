@@ -178,22 +178,22 @@ class Base extends Controller
                 case 0:
                     break;
                 case 1:
-                    $where['is_old'] = ['>', 0];
+                    $where['is_old'] = ['>', 30];
                     break;
                 case 2:
-                    $where['is_popular'] = ['>', 0];
+                    $where['is_popular'] = ['>', 30];
                     break;
                 case 3:
-                    $where['is_dj'] = ['>', 0];
+                    $where['is_dj'] = ['>', 30];
                     break;
                 case 4:
-                    $where['is_classical'] = ['>', 0];
+                    $where['is_classical'] = ['>', 30];
                     break;
                 case 5:
-                    $where['is_flok'] = ['>', 0];
+                    $where['is_flok'] = ['>', 30];
                     break;
                 case 6:
-                    $where['is_rap'] = ['>', 0];
+                    $where['is_rap'] = ['>', 30];
                     break;
                 case 7:
                     $where['is_new'] = 1;
