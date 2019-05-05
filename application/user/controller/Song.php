@@ -237,6 +237,7 @@ class Song extends Userbase
         $data = [];
         foreach ($pager['data'] as $datum){
             $song = Db::name('song')->where('song_id',$datum['song_id'])->find();
+            $song['list_id'] = $datum['list_id'];
             $data[] = $song;
         }
         return $this->successJson($data);
