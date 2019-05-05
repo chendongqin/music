@@ -177,24 +177,31 @@ class Base extends Controller
             switch ($type) {
                 case '经典老歌':
                     $where['is_old'] = ['>', 30];
+                    $this->_musicTypesCol['经典老歌'] = 'is_old';
                     break;
                 case '流行音乐':
                     $where['is_popular'] = ['>', 30];
+                    $this->_musicTypesCol['流行音乐'] = 'is_popular';
                     break;
                 case 'DJ':
                     $where['is_dj'] = ['>', 30];
+                    $this->_musicTypesCol['DJ'] = 'is_dj';
                     break;
                 case '古典音乐':
                     $where['is_classical'] = ['>', 30];
+                    $this->_musicTypesCol['古典音乐'] = 'is_classical';
                     break;
                 case '民谣':
                     $where['is_flok'] = ['>', 30];
+                    $this->_musicTypesCol['民谣'] = 'is_flok';
                     break;
                 case '说唱':
                     $where['is_rap'] = ['>', 30];
+                    $this->_musicTypesCol['说唱'] = 'is_rap';
                     break;
                 case '新歌':
                     $where['is_new'] = 1;
+                    $this->_musicTypesCol['新歌'] = 'is_new';
                     break;
                 case 1:
                     $where['is_old'] = ['>', 30];
