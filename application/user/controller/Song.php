@@ -229,7 +229,7 @@ class Song extends Userbase
         $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['user_id' => $user['user_id']];
         $order = 'list_id desc';
-        $pager = Db::table('mu_loves')
+        $pager = Db::table('play_list')
             ->where($where)
             ->order($order)
             ->paginate($pageLimit, false, array('page' => $page))
