@@ -236,11 +236,11 @@
           if (res.status === true) {
             location.reload();
           } else {
-            alert(res);
+            alert(res.msg);
           }
         },
         error: function(err){
-          alert(res);
+          alert('网络错误');
         }
       })
     });
@@ -262,7 +262,7 @@
         if (res.status === true) {
           location.reload();
         } else {
-          alert(res);
+          alert(res.msg);
         }
       });
     });
@@ -277,7 +277,7 @@
         if (res.status === true) {
           location.reload();
         } else {
-          alert(res);
+          alert(res.msg);
         }
       });
     });
