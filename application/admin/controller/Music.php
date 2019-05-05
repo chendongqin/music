@@ -56,11 +56,13 @@ class Music extends Adminbase
         if(empty($data['song_name']) || empty($data['singer'])){
             return $this->returnJson('歌名和歌手不能为空');
         }
+        //判断同歌名同歌手歌曲是否存在
         if ($exist = Db::name('song')->where(array('song_name'=>$data['song_name'],'singer'=>$data['singer'],'is_del'=>0))->find()){
             return $this->returnJson('已存在该歌手的同名歌曲');
         }
-        if(!in_array($data['language'],$this->_musicLanguages))
+        if(!in_array($data['language'],$this->_musicLanguages)){
             $data['language'] = '其他';
+        }
         $request = $this->request;
         //上传音乐文件
         $songOrigin = $request->file('songOrigin');

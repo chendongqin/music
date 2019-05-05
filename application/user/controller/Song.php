@@ -229,7 +229,7 @@ class Song extends Userbase
         $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $where = ['user_id' => $user['user_id']];
         $order = 'list_id desc';
-        $pager = Db::table('mu_play_list')
+        $pager = Db::name('play_list')
             ->where($where)
             ->order($order)
             ->paginate($pageLimit, false, array('page' => $page))
@@ -237,6 +237,7 @@ class Song extends Userbase
         $data = [];
         foreach ($pager['data'] as $datum){
             $song = Db::name('song')->where('song_id',$datum['song_id'])->find();
+            $song['list_id'] = $datum['list_id'];
             $data[] = $song;
         }
         return $this->successJson($data);
@@ -252,7 +253,7 @@ class Song extends Userbase
         }
         $insertData = ['user_id'=>$user['user_id']];
         foreach ($ids as $id){
-            if(!Db::name('song')->where(['song_id'=>$id,'is_del'=>0])){
+            if(!Db::name('song')->where(['song_id'=>$id,'is_del'=>0])->find()){
                 return $this->errorJson('参数错误');
             }
             $exist = Db::name('play_list')->where(['user_id'=>$user['user_id'],'song_id'=>$id])->find();

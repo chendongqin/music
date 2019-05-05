@@ -21,7 +21,7 @@ class Song extends Base
         $pageLimit = $this->getParam('pageLimit', 100, 'int');
         $page = $this->getParam('page', 1, 'int');
         $where = ['is_del' => 0];
-        $type = $this->getParam('type', 0, 'int');
+        $type = $this->getParam('type', '', 'string');
         $singer = $this->getParam('singer', '', 'string');
         $language = $this->getParam('language');
         $order = '';
