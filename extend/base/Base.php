@@ -175,7 +175,26 @@ class Base extends Controller
         }
         foreach ($types as $type) {
             switch ($type) {
-                case 0:
+                case '经典老歌':
+                    $where['is_old'] = ['>', 30];
+                    break;
+                case '流行音乐':
+                    $where['is_popular'] = ['>', 30];
+                    break;
+                case 'DJ':
+                    $where['is_dj'] = ['>', 30];
+                    break;
+                case '古典音乐':
+                    $where['is_classical'] = ['>', 30];
+                    break;
+                case '民谣':
+                    $where['is_flok'] = ['>', 30];
+                    break;
+                case '说唱':
+                    $where['is_rap'] = ['>', 30];
+                    break;
+                case '新歌':
+                    $where['is_new'] = 1;
                     break;
                 case 1:
                     $where['is_old'] = ['>', 30];
