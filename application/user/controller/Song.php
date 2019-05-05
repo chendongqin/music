@@ -253,7 +253,7 @@ class Song extends Userbase
         }
         $insertData = ['user_id'=>$user['user_id']];
         foreach ($ids as $id){
-            if(Db::name('song')->where(['song_id'=>$id,'is_del'=>0])){
+            if(!Db::name('song')->where(['song_id'=>$id,'is_del'=>0])->find()){
                 return $this->errorJson('参数错误');
             }
             $exist = Db::name('play_list')->where(['user_id'=>$user['user_id'],'song_id'=>$id])->find();
