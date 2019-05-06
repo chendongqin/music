@@ -29,7 +29,7 @@ class Song extends Base
             $where = $this->typeToWhere($type, $where);
             $order = $this->_musicTypesCol[$type] . ' desc';
         }
-        if($singer){
+        if ($singer) {
             $where['singer'] = $singer;
         }
         if ($language) {
@@ -122,7 +122,7 @@ class Song extends Base
     {
 //        $page = $this->getParam('page', 1, 'int');
         $pageLimit = $this->getParam('pageLimit', 100, 'int');
-        $where = ['is_del' => 0 ,'is_new'=>1];
+        $where = ['is_del' => 0, 'is_new' => 1];
         $order = 'played desc ,song_id desc';
         $pager = Db::name('song')
             ->where($where)
@@ -245,6 +245,46 @@ class Song extends Base
         $user = $this->getLoginUser();
         $songs = Algo::groom($user);
         return $this->successJson($songs);
+    }
+
+    //判断是否收藏音乐 status=true时为在收藏表里否则不在收藏表
+    public function is_love()
+    {
+        $user = $this->getLoginUser();
+        if(empty($user)){
+            return $this->errorJson();
+        }
+        $song_id = $this->getParam('song_id');
+        $love = Db::name('loves')->where(['user_id'=>$user['user_id'],'song_id'=>$song_id])->find();
+        if($love){
+            return $this->successJson();
+        }
+        return $this->errorJson();
+    }
+
+    //音乐下载
+    public function down()
+    {
+        $songId = $this->getParam('song_id',0,'int');
+        $song = Db::name('song')->where('song_id',$songId)->find();
+        if(!$song){
+            throw new \Error('音乐不存在',404);
+        }
+        //获取音乐文件后缀名（文件类型）
+        $typeArr = explode('.',$song['song_origin']);
+        $type = end($typeArr);
+        //文件真实路径
+        $filepath = trim(PUBLIC_PATH.trim($song['song_origin'] ,'\\'));
+        //文件大小
+        $filezise = filesize($filepath);
+        //设置header成下载页面
+        header('Content-Type:audio/'.$type);
+        header('Accept-Ranges:bytes');
+        header('Accept-Length:'.$filezise);
+        header('Content-Disposition:attachment;filename='.$song['song_name'].'.'.$type);
+        header('Cache-Control:max-age=0');
+        readfile($filepath);
+        exit();
     }
 
 }
