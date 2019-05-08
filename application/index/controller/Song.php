@@ -252,14 +252,19 @@ class Song extends Base
     {
         $user = $this->getLoginUser();
         if(empty($user)){
-            return $this->errorJson();
-        }
-        $song_id = $this->getParam('song_id');
-        $love = Db::name('loves')->where(['user_id'=>$user['user_id'],'song_id'=>$song_id])->find();
-        if($love){
             return $this->successJson();
         }
-        return $this->errorJson();
+        $ids = $this->getParam('ids');
+        if(empty($ids)){
+            return $this->errorJson('没有传入ids');
+        }
+        $loves = Db::name('loves')->where('`user_id`='.$user['user_id'].' and `song_id` in ('.$ids.')')->select();
+        $lists = [];
+        foreach ($loves as $love){
+            $lists[$love['song_id']] = ['song_id'=>$love['song_id'],'is_love'=>true];
+        }
+        return $this->successJson($lists);
+
     }
 
     //音乐下载
