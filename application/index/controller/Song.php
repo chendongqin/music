@@ -41,7 +41,7 @@ class Song extends Base
             ->order($order)
             ->paginate($pageLimit, false, array('page' => $page))
             ->toArray();
-        return $this->successJson($pager['data']);
+        return $this->successJson($this->have_love($pager['data']));
     }
 
     //歌曲搜索
@@ -72,7 +72,7 @@ class Song extends Base
                 ->where($where)
                 ->setInc('select_num');
         }
-        return $this->successJson($pager['data']);
+        return $this->successJson($this->have_love($pager['data']));
     }
 
     //热播榜
@@ -86,7 +86,7 @@ class Song extends Base
             ->order($order)
             ->limit($pageLimit)
             ->select();
-        return $this->successJson($pager);
+        return $this->successJson($this->have_love($pager));
     }
 
     //热搜榜
@@ -100,7 +100,7 @@ class Song extends Base
             ->order($order)
             ->limit($pageLimit)
             ->select();
-        return $this->successJson($pager);
+        return $this->successJson($this->have_love($pager));
     }
 
     //高分榜
@@ -114,7 +114,7 @@ class Song extends Base
             ->order($order)
             ->limit($pageLimit)
             ->select();
-        return $this->successJson($pager);
+        return $this->successJson($this->have_love($pager));
     }
 
     //新歌榜
@@ -129,7 +129,7 @@ class Song extends Base
             ->order($order)
             ->limit($pageLimit)
             ->select();
-        return $this->successJson($pager);
+        return $this->successJson($this->have_love($pager));
     }
 
     //专辑歌曲
@@ -151,7 +151,7 @@ class Song extends Base
             ->order($order)
             ->paginate($pageLimit, false, array('page' => $page))
             ->toArray();
-        return $this->successJson($pager['data']);
+        return $this->successJson($this->have_love($pager['data']));
     }
 
 
@@ -244,7 +244,7 @@ class Song extends Base
     {
         $user = $this->getLoginUser();
         $songs = Algo::groom($user);
-        return $this->successJson($songs);
+        return $this->successJson($this->have_love($songs));
     }
 
     //判断是否收藏音乐 status=true时为在收藏表里否则不在收藏表

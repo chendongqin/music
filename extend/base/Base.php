@@ -125,12 +125,13 @@ class Base extends Controller
      * @param $virefy，明文密码
      * @return bool
      */
-    protected function virefyPwd($password,$virefy){
-        $codes = explode(':',$password);
+    protected function virefyPwd($password, $virefy)
+    {
+        $codes = explode(':', $password);
         $secretPassword = $codes[0];
-        $sha1Code = isset($codes[1])?$codes[1]:'';
-        $sha1Password = sha1($virefy.$sha1Code);
-        if($secretPassword != $sha1Password){
+        $sha1Code = isset($codes[1]) ? $codes[1] : '';
+        $sha1Password = sha1($virefy . $sha1Code);
+        if ($secretPassword != $sha1Password) {
             return false;
         }
         return true;
@@ -259,6 +260,31 @@ class Base extends Controller
             return '';
         }
         return empty($user['nick_name']) ? substr_replace($user['mobile'], '*****', 3, -3) : $user['nick_name'];
+    }
+
+
+    /**
+     * 音乐添加是否收藏标记
+     * @param $songs
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    protected function have_love(array $songs)
+    {
+        $user = $this->getLoginUser();
+        if (empty($user)) {
+            foreach ($songs as $key => $song) {
+                $songs[$key]['have_love'] = 0;
+            }
+        }else{
+            foreach ($songs as $key => $song) {
+                $love = Db::name('loves')->where(array('user_id' => $user['user_id'], 'song_id' => $song['song_id']))->find();
+                $songs[$key]['have_love'] = empty($love) ? 0 : 1;
+            }
+        }
+        return $songs;
     }
 
 }
