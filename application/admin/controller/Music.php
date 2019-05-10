@@ -11,7 +11,7 @@ class Music extends Adminbase
         $name = $this->getParam('name', '', 'string');
         $pageLimit = $this->getParam('pageLimit', 15, 'int');
         $page = $this->getParam('page', 1, 'int');
-        $type = $this->getParam('type', 0, 'int');
+        $type = $this->getParam('type', '', 'string');
         $isdel = $this->getParam('isdel', 0, 'int');
         $where = $this->typeToWhere($type);
         $where['is_del'] = $isdel;
@@ -111,6 +111,7 @@ class Music extends Adminbase
                 return $this->returnJson('失败');
             }
         }
+        $data['create_at'] = date('YmdHis');
         $res = Db::name('song')->insert($data);
         if(!$res){
             Db::rollback();

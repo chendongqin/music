@@ -128,7 +128,12 @@ class Algo
             shuffle($hots);
             $songs = self::divide($hots, $needs, $songs);
         }
-//        Cache::set($key, json_encode($songs), 86400);
+        //缓存到每天6:00过期
+        $tomorrow = date('Y-m-d',strtotime('+1 day'));
+        $tomorrow .= ' 06:00:00';
+        $tomorrowTime = strtotime($tomorrow);
+        $prefix = $tomorrowTime - time();
+        Cache::set($key, json_encode($songs), $prefix);
         return $songs;
     }
 
@@ -162,9 +167,14 @@ class Algo
             shuffle($scores);
             $songs = self::divide($scores, $need, $songs);
         }
-//        if($key){
-//            Session::set($key, json_encode($songs), 86400);
-//        }
+        if($key){
+            //缓存到每天6:00过期
+            $tomorrow = date('Y-m-d',strtotime('+1 day'));
+            $tomorrow .= ' 06:00:00';
+            $tomorrowTime = strtotime($tomorrow);
+            $prefix = $tomorrowTime - time();
+            Session::set($key, json_encode($songs), $prefix);
+        }
 
         return $songs;
     }
