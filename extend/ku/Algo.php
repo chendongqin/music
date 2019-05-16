@@ -90,7 +90,7 @@ class Algo
         $playedTotal = 0;
         foreach (self::$songType as $type) {
             if ($interesting['love_' . $type]) {
-                $typeSocre[$type] += bcmul($playLog['played_' . $type], 0.4) + bcmul($loveLog['love_' . $type], 0.6);
+                $typeSocre[$type] = bcmul($playLog['played_' . $type], 0.4) + bcmul($loveLog['love_' . $type], 0.6);
             } else {
                 $typeSocre[$type] = bcmul($playLog['played_' . $type], 0.7) + bcmul($loveLog['love_' . $type], 0.3);
             }
