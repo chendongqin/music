@@ -174,11 +174,11 @@ class Algo
         }
         if($key){
             //缓存到每天6:00过期
-            $tomorrow = date('Y-m-d',strtotime('+1 day'));
-            $tomorrow .= ' 06:00:00';
-            $tomorrowTime = strtotime($tomorrow);
-            $prefix = $tomorrowTime - time();
-            Session::set($key, json_encode($songs), $prefix);
+//            $tomorrow = date('Y-m-d',strtotime('+1 day'));
+//            $tomorrow .= ' 06:00:00';
+//            $tomorrowTime = strtotime($tomorrow);
+//            $prefix = $tomorrowTime - time();
+            Session::set($key, json_encode($songs));
         }
 
         return $songs;
