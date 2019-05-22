@@ -27,15 +27,15 @@ class Algo
     public static function groom($user = null, $num = 20)
     {
         //查看缓存是否命中，命中则返回缓存值
-        $key = sprintf(self::GROOMKEY, date('Ymd'));
+        $cachkey = sprintf(self::GROOMKEY, date('Ymd'));
         if (empty($user)) {
-            if ($json = Session::get($key)) {
+            if ($json = Session::get($cachkey)) {
                 return json_decode($json, true);
             }
-            return self::tacit($num, $key);
+            return self::tacit($num, $cachkey);
         }
-        $key .= '_' . $user['user_id'];
-        if ($json = Cache::get($key)) {
+        $cachkey .= '_' . $user['user_id'];
+        if ($json = Cache::get($cachkey)) {
             return json_decode($json, true);
         }
         $songs = [];
@@ -138,7 +138,7 @@ class Algo
         $tomorrow .= ' 06:00:00';
         $tomorrowTime = strtotime($tomorrow);
         $prefix = $tomorrowTime - time();
-        Cache::set($key, json_encode($songs), $prefix);
+        Cache::set($cachkey, json_encode($songs), $prefix);
         return $songs;
     }
 
