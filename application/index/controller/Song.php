@@ -158,13 +158,14 @@ class Song extends Base
     //播放操作进行日志记录
     public function played()
     {
-        $user = $this->getLoginUser();
-        if (empty($user)) {
-            return $this->successJson();
-        }
         $songId = $this->getParam('songId', 0, 'int');
         if (!$song = Db::name('song')->where(['song_id' => $songId, 'is_del' => 0])->find()) {
             return $this->errorJson('歌曲不存在');
+        }
+        Db::name('song')->where('song_id',$songId)->setInc('played',1);
+        $user = $this->getLoginUser();
+        if (empty($user)) {
+            return $this->successJson();
         }
         if (!Db::name('played_log')->where('user_id', $user['user_id'])->find()) {
             $res = Db::name('played_log')->insert(array('user_id' => $user['user_id']));
@@ -210,6 +211,7 @@ class Song extends Base
                 return $this->errorJson();
             }
         }
+
         Db::commit();
         return $this->successJson();
     }
